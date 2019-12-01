@@ -70,12 +70,9 @@ const budgetController = (function () {
             }
         },
         calculateBudget : function () {
-            // 1. calculate the sum of all incomes and the sum of all expenses
             calculateTotal('exp');
             calculateTotal('inc');
-            // 2. calculate the budget (income - expenses)
             data.budget = data.totals.inc - data.totals.exp;
-            // 3. calculate the percentage of income spent (expenses)
             if (data.totals.inc > 0) {
                 data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
             }
@@ -127,17 +124,14 @@ const UIController = (function () {
     };
     const formatNumber = function (num, type) {
         let int;
-        // 1. add exactly 2 decimal points
         num = Math.abs(num);
         num = num.toFixed(2);
         const numSplit = num.split('.');
         int = numSplit[0];
-        // 2. ',' separating the thousands
         if (int.length > 3) {
             int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3);
         }
         const dec = numSplit[1];
-        // 3. add the + or - before the number
         return (type === 'exp' ? sign = '-' : '+') + ' ' + int + '.' + dec;
     };
     const nodeListForEach = function (list, callback) {
@@ -157,23 +151,19 @@ const UIController = (function () {
             let html;
             let newHtml;
             let element;
-            // Create an html string with some placeholder text
+            
             if (type === 'inc') {
                 element = DOMstrings.incomeContainer;
-                // Income
                 html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             else if (type === 'exp') {
                 element = DOMstrings.expensesContainer;
-                // Expenses
                 html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
-            // Replace the placeholder text with actual data received from the object.
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
             newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
-            // Insert the html into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         },
         deleteListItem : function (selectorID) {
